@@ -7,7 +7,7 @@ import numpy as np
 le = LabelEncoder()
 le.classes_ = np.load('label_encoder.npy', allow_pickle= True)
 
-img_path = 'cat.jpg'
+img_path = input("input the image path:")
 image = Image.open(img_path).convert('RGB')
 
 transform = transforms.Compose([
