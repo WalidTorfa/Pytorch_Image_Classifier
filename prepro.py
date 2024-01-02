@@ -14,8 +14,9 @@ BATCH_SIZE = 20
 EPOCHS = 10
 
 label_encoder=LabelEncoder() #change the classes "dog,cat,wild"into"1,2,3"
+device = "mps"#for MAC users
 
-device = "cuda" if torch.cuda.is_available() else "cpu" # detect the GPU if any, if not use CPU, change cuda to mps if you have a mac
+#device = "cuda" if torch.cuda.is_available() else "cpu" # for Windows users detect the GPU if any, if not use CPU, change cuda to mps if you have a mac
 total_loss_train_plot = []
 total_loss_validation_plot = []
 total_acc_train_plot = []
@@ -42,6 +43,10 @@ class Image_reco:
 
         final_data = pd.DataFrame(list(zip(Data, classes)), columns = ["image_path", "labels"])
         self.final_data=final_data
+
+        final_data['labels'] = label_encoder.fit_transform(final_data['labels']) # here is it
+
+        np.save('label_encoder.npy', label_encoder.classes_)
         return final_data
     
     def preprocessing_data(self,dataframe):
@@ -63,9 +68,6 @@ class Image_reco:
         test_dataset = CustomImageDataset(dataframe=test, transform=transform)
         return (train_dataset,val_dataset,test_dataset)
     def build_model(self):
-        
-        
-
         model = Net(len(self.final_data['labels'].unique())).to(device)
         # Define loss function and optimizer
         self.criterion = nn.CrossEntropyLoss()
@@ -102,14 +104,15 @@ class Image_reco:
               total_acc_val += val_acc
             print(f'Epoch {epoch+1}/{EPOCHS}, Train Loss: {round(total_loss_train/100, 4)} Train Accuracy {round((total_acc_train)/train_dataset.__len__() * 100, 4)} Validation Loss: {round(total_loss_val/100, 4)} Validation Accuracy: {round((total_acc_val)/val_dataset.__len__() * 100, 4)}')      
         
-        torch.save(model, "my_entire_model.pth")
+        torch.save(model, "final_model.pth")
     
         return model
 class CustomImageDataset(Dataset):
     def __init__(self, dataframe, transform=None):
         self.dataframe = dataframe
         self.transform = transform
-        self.labels = torch.tensor(label_encoder.fit_transform(dataframe['labels']),dtype=torch.long).to(device) # here is it
+        self.labels = torch.tensor(list(dataframe['labels']),dtype=torch.long).to(device) 
+
 
     def __len__(self):
         return self.dataframe.shape[0]
