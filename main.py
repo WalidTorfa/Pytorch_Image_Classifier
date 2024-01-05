@@ -1,6 +1,7 @@
 from prepro import Image_reco
 import torch
 
+
 # Ask the user to input a series of labels, separated by commas
 user_input = input("Enter labels separated by commas: ")
 
