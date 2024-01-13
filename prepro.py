@@ -16,7 +16,8 @@ EPOCHS = 10
 label_encoder=LabelEncoder() #change the classes "dog,cat,wild"into"1,2,3"
 device = "mps"#for MAC users
 
-#device = "cuda" if torch.cuda.is_available() else "cpu" # for Windows users detect the GPU if any, if not use CPU, change cuda to mps if you have a mac
+#device = "cuda" if torch.cuda.is_available() else "cpu" 
+#for Windows users detect the GPU if any, if not use CPU, change cuda to mps if you have a mac
 total_loss_train_plot = []
 total_loss_validation_plot = []
 total_acc_train_plot = []
