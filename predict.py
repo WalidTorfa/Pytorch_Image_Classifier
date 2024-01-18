@@ -24,7 +24,7 @@ image = image.unsqueeze(0) # Set the batch size to 1 so final dimention is (1,3,
 
 # print(image.shape)
 
-model = torch.load('my_entire_model.pth')
+model = torch.load("final_model.pth")
 
 
 output = model(image)
